@@ -13,6 +13,7 @@ module.exports = {
                 var parsedBody = body.split('[')[1].split(']')[0];
                 if (!error && response.statusCode === 200) {
                     var response = JSON.parse(parsedBody);
+                    channel.sendMessage(`Last price for ${ticker}: ${response.l} (${response.c}%)`)
                     channel.sendMessage('Last price for ' + ticker + ': ' + response.l);
                 }
                 else {
