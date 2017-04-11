@@ -47,7 +47,7 @@ client.on('message', message => {
     }
 
     if (text === '/shutdown') {
-        channel.sendMessage('Shutting down.');
+        channel.sendMessage(`${botOwner}\'s Shitty-Bot Shutting down.`);
         client.destroy();
     }
 
