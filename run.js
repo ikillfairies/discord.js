@@ -28,7 +28,7 @@ client.on('message', message => {
   text = message.content.toLowerCase(); // To do: Find a better way to handle case sensitivity
   
   if (text.includes('stock')) {
-    commands.stock(channel, text);
+    commands.getStockPrice(channel, text);
   }
   
   if (text === 'uptime') {
@@ -36,7 +36,7 @@ client.on('message', message => {
   }
   
   if (text.includes('joe') && message.author.username != 'Shitty-Bot') {
-    commands.insult(channel);
+    commands.insultJoe(channel);
   }
   
   if (text === '/shutdown') {
