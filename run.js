@@ -12,9 +12,10 @@ var text;
 var startTime;
 
 client.on('ready', () => {
+    startTime = new Date();
     channel = client.channels.find('name', 'status');
     console.log('Shitty-Bot is online.');
-    if (botOwner.toString() === ''){
+    if (botOwner.toString() === '') {
         botOwner = "Jeff";
     }
     channel.sendMessage(`${botOwner}\'s Shitty-Bot is online.`);
@@ -32,7 +33,12 @@ client.on('message', message => {
 
     channel = client.channels.get(message.channel.id); // Switch to the channel the last message was sent from
     text = message.content.toLowerCase(); // To do: Find a better way to handle case sensitivity
-
+    
+    if (text === '/shutdown ' + botOwner.toLowerCase()) {
+        channel.sendMessage(`${botOwner}\'s Shitty-Bot Shutting down.`);
+        client.destroy();
+    }
+    
     if (text.includes('stock')) {
         commands.getStockPrice(channel, text);
     }
@@ -41,14 +47,8 @@ client.on('message', message => {
         channel.sendMessage(commands.uptime(client, startTime));
     }
 
-    // lol joe
     if (text.includes(botOwner.toString().toLowerCase()) && message.author.username != 'Shitty-Bot') {
         commands.insult(channel, botOwner.toString());
-    }
-
-    if (text === '/shutdown') {
-        channel.sendMessage(`${botOwner}\'s Shitty-Bot Shutting down.`);
-        client.destroy();
     }
 
 });
