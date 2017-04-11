@@ -5,6 +5,7 @@ const secrets = require('./secrets');
 const token = secrets.token;
 
 const commands = require('./commands.js');
+const stockPatt = /\$[a-z]{1,5}/gi;
 var botOwner = process.argv.slice(2);
 
 var channel;
@@ -31,10 +32,15 @@ client.on('message', message => {
     console.log(message.channel.id + ' > ' + message.author.username + ' > ' + message.content);
 
     channel = client.channels.get(message.channel.id); // Switch to the channel the last message was sent from
-    text = message.content.toLowerCase(); // To do: Find a better way to handle case sensitivity
+    var text = '';
+    if (message.author.username != 'Shitty-Bot') {
+        text = message.content.toLowerCase(); // To do: Find a better way to handle case sensitivity
+    }
 
-    if (text.includes('stock')) {
-        commands.getStockPrice(channel, text);
+    var match;
+    while ((match = stockPatt.exec(text)) !== null){
+        console.log(`found ${match[0]}`);
+        commands.getStockPrice(channel, match[0]);
     }
 
     if (text === 'uptime') {
@@ -42,7 +48,7 @@ client.on('message', message => {
     }
 
     // lol joe
-    if (text.includes(botOwner.toString().toLowerCase()) && message.author.username != 'Shitty-Bot') {
+    if (text.includes(botOwner.toString().toLowerCase())) {
         commands.insult(channel, botOwner.toString());
     }
 

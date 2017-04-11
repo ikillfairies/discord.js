@@ -7,26 +7,21 @@ module.exports = {
     // See http://www.jarloo.com/real-time-google-stock-api/ for API documentation
     // To do: Get a better API, this one blows
     getStockPrice: function(channel, ticker) {
-        ticker = ticker.replace(' ', '');
-        ticker = ticker.replace('stock', '');
-        ticker = ticker.toUpperCase();
-        if (ticker.length < 6) {
-            request(stockURL + ticker, (error, response, body) => {
-                try {
-                    var parsedBody = body.split('[')[1].split(']')[0];
-                    if (!error && response.statusCode === 200) {
-                        var response = JSON.parse(parsedBody);
-                        channel.sendMessage('Last price for ' + ticker + ': ' + response.l);
-                    }
-                    else {
-                        channel.sendMessage('Got an error: ', error, ', status code: ', response);
-                    }
+        request(stockURL + ticker.slice(1), (error, response, body) => {
+            try {
+                var parsedBody = body.split('[')[1].split(']')[0];
+                if (!error && response.statusCode === 200) {
+                    var response = JSON.parse(parsedBody);
+                    channel.sendMessage('Last price for ' + ticker + ': ' + response.l);
                 }
-                catch(err) {
-                    channel.sendMessage('Unable to look up "' + ticker + '".');
+                else {
+                    channel.sendMessage('Got an error: ', error, ', status code: ', response);
                 }
-            })
-        }
+            }
+            catch(err) {
+                channel.sendMessage('Unable to look up "' + ticker + '".');
+            }
+        })
     },
 
 
