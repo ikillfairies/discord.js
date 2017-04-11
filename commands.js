@@ -13,7 +13,7 @@ module.exports = {
                 var parsedBody = body.split('[')[1].split(']')[0];
                 if (!error && response.statusCode === 200) {
                     var response = JSON.parse(parsedBody);
-                    channel.sendMessage(`Last price for ${ticker}: ${response.l} (${response.cp}%)`)
+                    channel.sendMessage(`${ticker}: ${response.l} (${response.cp}%)`)
                 }
                 else {
                     channel.sendMessage('Got an error: ', error, ', status code: ', response);
@@ -26,9 +26,9 @@ module.exports = {
     },
 
     // Tell me how long the bot's been online, or more importantly if it's actually online
-    uptime: function(client, startTime) {
+    uptime: function(client, startTime, botOwner) {
         var uptime = client.uptime / 1000;
-        return `Online for ${uptime} seconds since ${startTime.toUTCString()}.`;
+        return `Online for ${uptime} seconds since ${startTime.toUTCString()}. Current owner is ${botOwner}`;
     },
 
     // Generate an Elizabethan insult and send it

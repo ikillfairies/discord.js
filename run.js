@@ -7,7 +7,7 @@ const token = secrets.token;
 const commands = require('./commands.js');
 const stockPattern = /\$[a-z]{1,5}/gi;
 
-var botOwner = String(process.argv.slice(2));
+var botOwner = String(process.argv.slice(2)) || 'Jeff';
 
 var channel;
 var text;
@@ -17,16 +17,11 @@ client.on('ready', () => {
     startTime = new Date();
     channel = client.channels.find('name', 'status');
     console.log(`${botOwner}\'s Shitty-Bot is online.`);
-    if (botOwner === '') {
-        botOwner = "Jeff";
-    }
-    channel.sendMessage(`${botOwner}\'s Shitty-Bot is online.`);
 });
 
 client.on('disconnect', () => {
     channel = client.channels.find('name', 'status');
     console.log('Shitty-Bot is disconnecting');
-    channel.sendMessage(`${botOwner}\'s Shitty-Bot is disconnecting.`);
 });
 
 client.on('message', message => {
@@ -38,9 +33,9 @@ client.on('message', message => {
     text = text = message.content.toLowerCase(); // To do: Find a better way to handle case sensitivity
 
     var match;
-    while ((match = stockPattern.exec(text)) !== null){
+    while ((match = stockPattern.exec(text)) !== null) {
         console.log(`found ${match[0]}`);
-        commands.getStockPrice(channel, match[0]);
+        commands.getStockPrice(channel, match[0].toUpperCase());
     }
 
     // Shutdown needs to go first, if shutdown is called ignore everything else
@@ -50,13 +45,13 @@ client.on('message', message => {
         client.destroy();
     }
 
-    else if (text === 'uptime') {
-        channel.sendMessage(commands.uptime(client, startTime));
+    else if (text === 'status') {
+        channel.sendMessage(commands.uptime(client, startTime, botOwner));
     }
 
     else if (text.includes('stock')) {
         text = '$' + text.replace('stock', '').replace(' ', '');
-        if (text.length < 6) commands.getStockPrice(channel, text);
+        if (text.length < 6) commands.getStockPrice(channel, text.toUpperCase());
     }
 
     else if (text.includes(botOwner.toString().toLowerCase())) {
