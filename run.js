@@ -11,9 +11,13 @@ const commands = require('./commands.js');
 
 // Globals for current (last message received in) channel, and text received
 var channel;
-var text; 
+var text;
+
+// Global for bot start time
+var startTime;
 
 client.on('ready', () => {
+  startTime = new Date();
   console.log('Shitty-Bot is online.');
   // channel.sendMessage('Shitty-Bot is online.'); // Commented out b/c this is kind of annoying when testing
 });
@@ -36,7 +40,7 @@ client.on('message', message => {
   
   // Respond to uptime request
   if (text === 'uptime') {
-    channel.sendMessage(commands.uptime(client));
+    channel.sendMessage(commands.uptime(client, startTime));
   }
   
   // lol joe
