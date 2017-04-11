@@ -17,7 +17,7 @@ var text;
 var startTime;
 
 client.on('ready', () => {
-  startTime = new Date().toUTCString();
+  startTime = new Date();
   console.log('Shitty-Bot is online.');
   // channel.sendMessage('Shitty-Bot is online.'); // Commented out b/c this is kind of annoying when testing
 });

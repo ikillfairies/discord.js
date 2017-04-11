@@ -39,7 +39,7 @@ module.exports = {
   uptime: function(client, startTime) {
     // To do: make this fancier and actually tell you what time the bot came online
     var uptime = client.uptime / 1000;
-    return `Online for ${uptime} seconds since ${startTime}.`;
+    return `Online for ${uptime} seconds since ${startTime.toUTCString()}.`;
   },
   
   // Insult - generate an Elizabethan insult and send it (to joe)
