@@ -40,7 +40,7 @@ client.on('message', message => {
   }
   
   // lol joe
-  if (text === 'joe') {
+  if (text.includes('joe') && message.author.username != 'Shitty-Bot') {
     commands.insult(channel);
   }
   
