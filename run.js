@@ -5,7 +5,7 @@ const secrets = require('./secrets');
 const token = secrets.token;
 
 const commands = require('./commands.js');
-var botOwner = process.argv.slice(2);
+var botOwner = String(process.argv.slice(2));
 
 var channel;
 var text;
@@ -15,7 +15,7 @@ client.on('ready', () => {
     startTime = new Date();
     channel = client.channels.find('name', 'status');
     console.log('Shitty-Bot is online.');
-    if (botOwner.toString() === '') {
+    if (botOwner === '') {
         botOwner = "Jeff";
     }
     channel.sendMessage(`${botOwner}\'s Shitty-Bot is online.`);
@@ -39,16 +39,16 @@ client.on('message', message => {
         client.destroy();
     }
     
-    if (text.includes('stock')) {
+    else if (text.includes('stock')) {
         commands.getStockPrice(channel, text);
     }
 
-    if (text === 'uptime') {
+    else if (text === 'uptime') {
         channel.sendMessage(commands.uptime(client, startTime));
     }
 
-    if (text.includes(botOwner.toString().toLowerCase()) && message.author.username != 'Shitty-Bot') {
-        commands.insult(channel, botOwner.toString());
+    else if (text.includes(botOwner.toLowerCase()) && message.author.username != 'Shitty-Bot') {
+        commands.insult(channel, botOwner);
     }
 
 });
