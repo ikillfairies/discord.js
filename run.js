@@ -1,18 +1,15 @@
-// Create the Discord bot
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-// Shitty-Bot's login credentials
 const secrets = require('./secrets');
 const token = secrets.token;
 
-// Let's keep the commands separate to not clutter this file
 const commands = require('./commands.js');
 var botOwner = process.argv.slice(2);
 
-// Globals for current (last message received in) channel, and text received
 var channel;
 var text;
+<<<<<<< HEAD
 
 client.on('ready', () => {
     channel = client.channels.find('name', 'status');
@@ -55,6 +52,44 @@ client.on('message', message => {
         commands.kill(client);
     }
 
+=======
+var startTime;
+
+client.on('ready', () => {
+  startTime = new Date();
+  console.log('Shitty-Bot online');
+});
+
+client.on('disconnect', () => {
+  startTime = new Date();
+  console.log('Shitty-Bot offline');
+});
+
+client.on('message', message => {
+  
+  console.log(message.channel.id + ' > ' + message.author.username + ' > ' + message.content);
+  
+  channel = client.channels.get(message.channel.id); // Switch to the channel the last message was sent from
+  text = message.content.toLowerCase(); // To do: Find a better way to handle case sensitivity
+  
+  if (text.includes('stock')) {
+    commands.getStockPrice(channel, text);
+  }
+  
+  if (text === 'uptime') {
+    channel.sendMessage(commands.uptime(client, startTime));
+  }
+  
+  if (text.includes('joe') && message.author.username != 'Shitty-Bot') {
+    commands.insultJoe(channel);
+  }
+  
+  if (text === '/shutdown') {
+    channel.sendMessage('Shutting down.');
+    client.destroy(); 
+  }
+  
+>>>>>>> 004d4359838142ba9babc96b1ac9cdfed7317941
 });
 
 client.login(token);
