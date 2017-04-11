@@ -6,16 +6,17 @@ const token = secrets.token;
 
 const commands = require('./commands.js');
 const stockPatt = /\$[a-z]{1,5}/gi;
-var botOwner = process.argv.slice(2);
+var botOwner = String(process.argv.slice(2));
 
 var channel;
 var text;
 var startTime;
 
 client.on('ready', () => {
+    startTime = new Date();
     channel = client.channels.find('name', 'status');
     console.log('Shitty-Bot is online.');
-    if (botOwner.toString() === ''){
+    if (botOwner === '') {
         botOwner = "Jeff";
     }
     channel.sendMessage(`${botOwner}\'s Shitty-Bot is online.`);
@@ -43,19 +44,18 @@ client.on('message', message => {
         commands.getStockPrice(channel, match[0]);
     }
 
-    if (text === 'uptime') {
-        channel.sendMessage(commands.uptime(client, startTime));
-    }
-
-    // lol joe
-    if (text.includes(botOwner.toString().toLowerCase())) {
-        commands.insult(channel, botOwner.toString());
-    }
-
-    if (text === '/shutdown') {
+    if (text === '/shutdown ' + botOwner.toLowerCase()) {
         channel.sendMessage(`${botOwner}\'s Shitty-Bot Shutting down.`);
         client.destroy();
     }
+    else if (text === 'uptime') {
+        channel.sendMessage(commands.uptime(client, startTime));
+    }
+
+    else if (text.includes(botOwner.toString().toLowerCase())) {
+        commands.insult(channel, botOwner);
+    }
+
 
 });
 

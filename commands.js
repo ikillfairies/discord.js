@@ -4,6 +4,7 @@ const insultURL = 'http://quandyfactory.com/insult/json';
 
 // Note: You must pass channel in explicitly when doing an asynch JSON request
 module.exports = {
+
     // See http://www.jarloo.com/real-time-google-stock-api/ for API documentation
     // To do: Get a better API, this one blows
     getStockPrice: function(channel, ticker) {
@@ -24,14 +25,13 @@ module.exports = {
         })
     },
 
-
     // Tell me how long the bot's been online, or more importantly if it's actually online
     uptime: function(client, startTime) {
         var uptime = client.uptime / 1000;
         return `Online for ${uptime} seconds since ${startTime.toUTCString()}.`;
     },
 
-    // Insult - generate an Elizabethan insult and send it
+    // Generate an Elizabethan insult and send it
     insult: function(channel, owner) {
         console.log('Retrieving an Elizabethan insult');
         request(insultURL, (error, response, body) => {
