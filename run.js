@@ -6,6 +6,7 @@ const token = secrets.token;
 
 const commands = require('./commands');
 const stockPattern = /\$[a-z]{1,5}/gi;
+const portfolioPattern = /^(port)( [a-z]{1,5})*/gi;
 
 var botOwner = String(process.argv.slice(2)) || 'Jeff';
 
@@ -68,6 +69,10 @@ client.on('message', message => {
 
     else if (text.includes(botOwner.toString().toLowerCase())) {
         commands.elizabethanInsult(channel, botOwner);
+    }
+
+    else if (portfolioPattern.test(text)){
+        commands.portfolio(channel, text, message.author.id);
     }
 
 });
