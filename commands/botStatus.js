@@ -1,8 +1,8 @@
 module.exports = (
 
-    function(client, startTime, botOwner) {
+    function(client, readyTime, botOwner) {
         var uptime = client.uptime / 1000;
-        return `Online for ${uptime} seconds since ${startTime.toUTCString()}. Current owner is ${botOwner}.`;
+        return `Online for ${uptime} seconds since ${readyTime.toUTCString()}. Current owner is ${botOwner}.`;
     }
 
 )

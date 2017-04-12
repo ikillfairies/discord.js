@@ -30,7 +30,7 @@ module.exports = (
                 }
             }
             catch(err) {
-                channel.sendMessage('Unable to look up "' + ticker + '".');
+                channel.sendMessage('Unable to look up ' + ticker + '.');
             }
         });
     }
