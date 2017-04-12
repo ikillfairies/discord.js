@@ -4,7 +4,7 @@ const commands = require('./commands');
 const client = new Discord.Client();
 const stockPattern = /\$[a-z]{1,5}/gi;
 var botOwner = String(process.argv.slice(2)) || 'Jeff';
-var botAsleep = false;
+var botStatus;
 var channel;
 var text;
 
@@ -13,7 +13,6 @@ client.on('ready', () => {
 });
 
 client.on('disconnect', () => {
-    channel = client.channels.find('name', 'status');
     console.log('Shitty-Bot is disconnecting');
 });
 
@@ -25,12 +24,14 @@ client.on('message', message => {
 
     channel = client.channels.get(message.channel.id);
     text = text = message.content.toLowerCase();
+    botStatus = client.user.presence.status;
 
-    if (text === 'wake up' && botAsleep) {
+    if (text === 'wake up' && botStatus == 'dnd') {
+        client.user.setStatus('online');
         channel.sendMessage('ok, back');
         botAsleep = false;
     }
-    else if (botAsleep) return;
+    else if (botStatus == 'dnd') return;
 
     var match;
     while ((match = stockPattern.exec(text)) !== null) {
@@ -44,7 +45,8 @@ client.on('message', message => {
         client.destroy();
     }
 
-    else if (text === 'go to sleep' && !botAsleep) {
+    else if (text === 'go to sleep' && botStatus == 'online') {
+        client.user.setStatus('dnd');
         channel.sendMessage('brb afk');
         botAsleep = true;
     }
