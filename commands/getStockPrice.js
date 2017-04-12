@@ -1,6 +1,6 @@
 const request = require('request');
 const secrets = require('../secrets');
-
+//api reference: https://developer.tradier.com/documentation
 const tradierURL = 'https://sandbox.tradier.com/v1/markets/quotes';
 const tradierToken = 'Bearer ' + secrets.tradierToken;
 
