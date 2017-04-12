@@ -1,17 +1,29 @@
 const request = require('request');
-const stockURL = 'http://finance.google.com/finance/info?client=ig&q=';
+const secrets = require('../secrets');
+
+const tradierURL = 'https://sandbox.tradier.com/v1/markets/quotes';
+const tradierToken = 'Bearer ' + secrets.tradierToken;
 
 module.exports = (
 
-    // See http://www.jarloo.com/real-time-google-stock-api/ for API documentation
-    // To do: Get a better API, this one blows
     function(channel, ticker) {
-        request(stockURL + ticker.slice(1), (error, response, body) => {
+        var options = {
+            url: tradierURL,
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': tradierToken
+            },
+            form: {
+                symbols: ticker.slice(1)
+            }
+        };
+        request(options, (error, response, body) => {
             try {
-                var parsedBody = body.split('[')[1].split(']')[0];
                 if (!error && response.statusCode === 200) {
-                    var response = JSON.parse(parsedBody);
-                    channel.sendMessage(`${ticker}: ${response.l} (${response.cp}%)`)
+                    var response = JSON.parse(body).quotes.quote;
+                    console.log(response);
+                    channel.sendMessage(`${ticker}: ${response.last} (${response.change_percentage}%)`);
                 }
                 else {
                     channel.sendMessage('Got an error: ', error, ', status code: ', response);

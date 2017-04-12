@@ -28,11 +28,11 @@ client.on('disconnect', () => {
 client.on('message', message => {
 
     console.log(message.channel.id + ' > ' + message.author.username + ' > ' + message.content);
-  
+
     if (message.author.username === 'Shitty-Bot') return; // Ignore messages sent by Shitty-Bot
 
     channel = client.channels.get(message.channel.id);
-    text = text = message.content.toLowerCase(); // To do: Find a better way to handle case sensitivity
+    text = text = message.content.toLowerCase();
 
     if (text === 'shitty-bot wake up' && botAsleep) {
         channel.sendMessage('ok, back');
