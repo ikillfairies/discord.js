@@ -4,7 +4,7 @@ const client = new Discord.Client();
 const secrets = require('./secrets');
 const token = secrets.token;
 
-const commands = require('./commands.js');
+const commands = require('./commands');
 const stockPattern = /\$[a-z]{1,5}/gi;
 
 var botOwner = String(process.argv.slice(2)) || 'Jeff';
@@ -12,10 +12,10 @@ var botOwner = String(process.argv.slice(2)) || 'Jeff';
 var channel;
 var text;
 var startTime;
+var botAsleep = false;
 
 client.on('ready', () => {
     startTime = new Date();
-    channel = client.channels.find('name', 'status');
     console.log(`${botOwner}\'s Shitty-Bot is online.`);
 });
 
@@ -24,13 +24,21 @@ client.on('disconnect', () => {
     console.log('Shitty-Bot is disconnecting');
 });
 
+// Note: You must pass channel in explicitly when doing an asynch JSON request
 client.on('message', message => {
 
     console.log(message.channel.id + ' > ' + message.author.username + ' > ' + message.content);
+  
+    if (message.author.username === 'Shitty-Bot') return; // Ignore messages sent by Shitty-Bot
 
-    if (message.author.username === 'Shitty-Bot') return; // Ignore messages sent 
-    channel = client.channels.get(message.channel.id); // Switch to the channel the last message was sent from
+    channel = client.channels.get(message.channel.id);
     text = text = message.content.toLowerCase(); // To do: Find a better way to handle case sensitivity
+
+    if (text === 'shitty-bot wake up' && botAsleep) {
+        channel.sendMessage('ok, back');
+        botAsleep = false;
+    }
+    else if (botAsleep) return;
 
     var match;
     while ((match = stockPattern.exec(text)) !== null) {
@@ -39,14 +47,18 @@ client.on('message', message => {
     }
 
     // Shutdown needs to go first, if shutdown is called ignore everything else
-    // To do: fix that damn error message when we shut down
     if (text === '/shutdown ' + botOwner.toLowerCase()) {
         channel.sendMessage(`${botOwner}\'s Shitty-Bot Shutting down.`);
         client.destroy();
     }
 
-    else if (text === 'status') {
-        channel.sendMessage(commands.uptime(client, startTime, botOwner));
+    else if (text === 'shitty-bot stfu' && !botAsleep) {
+        channel.sendMessage('brb afk');
+        botAsleep = true;
+    }
+
+    else if (text === 'status' || text === 'uptime') {
+        channel.sendMessage(commands.botStatus(client, startTime, botOwner));
     }
 
     else if (text.includes('stock')) {
@@ -55,7 +67,7 @@ client.on('message', message => {
     }
 
     else if (text.includes(botOwner.toString().toLowerCase())) {
-        commands.insult(channel, botOwner);
+        commands.elizabethanInsult(channel, botOwner);
     }
 
 });
