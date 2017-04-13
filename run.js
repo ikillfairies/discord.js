@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const secrets = require('./secrets');
 const commands = require('./commands');
-const stockPattern = /(stock |\$)\$[a-z]{1,5}/gi;
+const stockPattern = /\$[a-z]{1,5}/gi;
 
 const client = new Discord.Client();
 
@@ -31,7 +31,6 @@ client.on('message', message => {
     if (text === 'wake up' && botStatus == 'dnd') {
         client.user.setStatus('online');
         channel.sendMessage('ok, back');
-        botAsleep = false;
     }
     else if (botStatus == 'dnd') return;
 
@@ -41,7 +40,6 @@ client.on('message', message => {
         commands.getStockPrice(channel, match[0].toUpperCase());
     }
 
-    // Shutdown needs to go first, if shutdown is called ignore everything else
     if (text === '/shutdown ' + botOwner.toLowerCase()) {
         channel.sendMessage(`${botOwner}\'s Shitty-Bot Shutting down.`);
         client.destroy();
@@ -50,18 +48,12 @@ client.on('message', message => {
     else if (text === 'go to sleep' && botStatus == 'online') {
         client.user.setStatus('dnd');
         channel.sendMessage('brb afk');
-        botAsleep = true;
     }
 
     else if (text === 'status' || text === 'uptime') {
         channel.sendMessage(commands.botStatus(client, client.readyAt, botOwner));
     }
-/*
-    else if (text.includes('stock')) {
-        text = '$' + text.replace('stock', '').replace(' ', '');
-        if (text.length < 6) commands.getStockPrice(channel, text.toUpperCase());
-    }
-*/
+
     else if (text.includes(botOwner.toString().toLowerCase())) {
         commands.elizabethanInsult(channel, botOwner);
     }
