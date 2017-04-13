@@ -1,48 +1,43 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
-
 const secrets = require('./secrets');
-const token = secrets.token;
-
 const commands = require('./commands');
 const stockPattern = /(stock |\$)\$[a-z]{1,5}/gi;
 
-var botOwner = String(process.argv.slice(2)) || 'Jeff';
+const client = new Discord.Client();
 
+var botOwner = String(process.argv.slice(2)) || 'Jeff';
+var botStatus;
 var channel;
 var text;
-var startTime;
-var botAsleep = false;
 
 client.on('ready', () => {
-    startTime = new Date();
     console.log(`${botOwner}\'s Shitty-Bot is online.`);
 });
 
 client.on('disconnect', () => {
-    channel = client.channels.find('name', 'status');
     console.log('Shitty-Bot is disconnecting');
 });
 
 // Note: You must pass channel in explicitly when doing an asynch JSON request
 client.on('message', message => {
 
-    console.log(message.channel.id + ' > ' + message.author.username + ' > ' + message.content);
-
-    if (message.author.username === 'Shitty-Bot') return; // Ignore messages sent by Shitty-Bot
+    console.log('[' + message.channel.id + '] ' + message.author.username + ': ' + message.content);
+    if (message.author.username === 'Shitty-Bot') return;
 
     channel = client.channels.get(message.channel.id);
     text = text = message.content.toLowerCase();
+    botStatus = client.user.presence.status;
 
-    if (text === 'shitty-bot wake up' && botAsleep) {
+    if (text === 'wake up' && botStatus == 'dnd') {
+        client.user.setStatus('online');
         channel.sendMessage('ok, back');
         botAsleep = false;
     }
-    else if (botAsleep) return;
+    else if (botStatus == 'dnd') return;
 
     var match;
     while ((match = stockPattern.exec(text)) !== null) {
-        console.log(`found ${match[0]}`);
+        console.log(`Found ${match[0]}`);
         commands.getStockPrice(channel, match[0].toUpperCase());
     }
 
@@ -52,13 +47,14 @@ client.on('message', message => {
         client.destroy();
     }
 
-    else if (text === 'shitty-bot stfu' && !botAsleep) {
+    else if (text === 'go to sleep' && botStatus == 'online') {
+        client.user.setStatus('dnd');
         channel.sendMessage('brb afk');
         botAsleep = true;
     }
 
     else if (text === 'status' || text === 'uptime') {
-        channel.sendMessage(commands.botStatus(client, startTime, botOwner));
+        channel.sendMessage(commands.botStatus(client, client.readyAt, botOwner));
     }
 /*
     else if (text.includes('stock')) {
@@ -72,4 +68,4 @@ client.on('message', message => {
 
 });
 
-client.login(token);
+client.login(secrets.token);
