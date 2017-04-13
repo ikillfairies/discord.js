@@ -5,7 +5,7 @@ const secrets = require('./secrets');
 const token = secrets.token;
 
 const commands = require('./commands');
-const stockPattern = /\$[a-z]{1,5}/gi;
+const stockPattern = /(stock |\$)\$[a-z]{1,5}/gi;
 
 var botOwner = String(process.argv.slice(2)) || 'Jeff';
 
@@ -60,12 +60,12 @@ client.on('message', message => {
     else if (text === 'status' || text === 'uptime') {
         channel.sendMessage(commands.botStatus(client, startTime, botOwner));
     }
-
+/*
     else if (text.includes('stock')) {
         text = '$' + text.replace('stock', '').replace(' ', '');
         if (text.length < 6) commands.getStockPrice(channel, text.toUpperCase());
     }
-
+*/
     else if (text.includes(botOwner.toString().toLowerCase())) {
         commands.elizabethanInsult(channel, botOwner);
     }
