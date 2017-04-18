@@ -1,11 +1,12 @@
 const Discord = require('discord.js');
 const secrets = require('./secrets');
 const commands = require('./commands');
+const os = require('os');
+
 const stockPattern = /\$[a-z]{1,5}/gi;
-
 const client = new Discord.Client();
+const botOwner = os.userInfo().username;
 
-var botOwner = String(process.argv.slice(2)) || 'Jeff';
 var botStatus;
 var channel;
 var text;
@@ -40,7 +41,7 @@ client.on('message', message => {
         commands.getStockPrice(channel, match[0].toUpperCase());
     }
 
-    if (text === '/shutdown ' + botOwner.toLowerCase()) {
+    if (text === 'shutdown ' + botOwner.toLowerCase()) {
         channel.sendMessage(`${botOwner}\'s Shitty-Bot Shutting down.`);
         client.destroy();
     }
