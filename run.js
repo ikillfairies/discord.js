@@ -42,7 +42,7 @@ client.on('message', message => {
     }
 
     if (text === 'shutdown ' + botOwner.toLowerCase()) {
-        channel.sendMessage(`${botOwner}\'s Shitty-Bot Shutting down.`);
+        channel.sendMessage(`${botOwner}\'s Shitty-Bot shutting down.`);
         client.destroy();
     }
 
@@ -57,6 +57,20 @@ client.on('message', message => {
 
     else if (text.includes(botOwner.toString().toLowerCase())) {
         commands.elizabethanInsult(channel, botOwner);
+    }
+
+    else if (text.includes('options') && text.length < 14) {
+        text = text.replace('options', '');
+        text = text.replace(' ', '');
+        console.log(text);
+        commands.getOptionsChain(channel, text.toUpperCase());
+    }
+
+    else if (text.includes('expirations') && text.length < 18) {
+        text = text.replace('expirations', '');
+        text = text.replace(' ', '');
+        console.log(text);
+        commands.getOptionsExpirations(channel, text.toUpperCase());
     }
 
 });
