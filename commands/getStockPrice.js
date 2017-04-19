@@ -15,7 +15,7 @@ module.exports = (
                 'Authorization': tradierToken
             },
             form: {
-                symbols: ticker.slice(1)
+                symbols: ticker
             }
         };
         request(options, (error, response, body) => {

@@ -29,7 +29,6 @@ client.on('disconnect', () => {
 client.on('message', message => {
 
     console.log(message.channel.id + ' > ' + message.author.username + ' > ' + message.content);
-
     if (message.author.username === 'Shitty-Bot') return; // Ignore messages sent by Shitty-Bot
 
     channel = client.channels.get(message.channel.id);
@@ -44,7 +43,11 @@ client.on('message', message => {
     var match;
     while ((match = stockPattern.exec(text)) !== null) {
         console.log(`found ${match[0]}`);
-        commands.getStockPrice(channel, match[0].toUpperCase());
+        commands.getStockPrice(channel, match[0].toUpperCase().slice(1));
+    }
+    while ((match = portfolioPattern.exec(text)) !== null) {
+        console.log('portfolio triggered');
+        commands.portfolio(channel, text, message.author.id);
     }
 
     // Shutdown needs to go first, if shutdown is called ignore everything else
@@ -69,10 +72,6 @@ client.on('message', message => {
 
     else if (text.includes(botOwner.toString().toLowerCase())) {
         commands.elizabethanInsult(channel, botOwner);
-    }
-
-    else if (portfolioPattern.test(text)){
-        commands.portfolio(channel, text, message.author.id);
     }
 
 });
