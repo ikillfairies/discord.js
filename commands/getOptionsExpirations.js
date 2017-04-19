@@ -1,7 +1,7 @@
 const request = require('request');
 const secrets = require('../secrets');
-//api reference: https://developer.tradier.com/documentation
-const tradierURL = 'https://sandbox.tradier.com/v1/markets/quotes';
+
+const tradierURL = 'https://sandbox.tradier.com/v1/markets/options/expirations';
 const tradierToken = 'Bearer ' + secrets.tradierToken;
 
 module.exports = (
@@ -15,15 +15,16 @@ module.exports = (
                 'Authorization': tradierToken
             },
             form: {
-                symbols: ticker
+                symbol: ticker
             }
         };
         request(options, (error, response, body) => {
             try {
                 if (!error && response.statusCode === 200) {
-                    var response = JSON.parse(body).quotes.quote;
-                    console.log(response);
-                    channel.sendMessage(`${ticker}: ${response.last} (${response.change_percentage}%)`);
+                    var response = JSON.parse(body).expirations.date;
+                    response = String(response);
+                    response = ticker + ' option expiration dates: ```' + response.replace(/,/g, '\n') + '```';
+                    channel.sendMessage(response);
                 }
                 else {
                     channel.sendMessage('Got an error: ', error, ', status code: ', response);
