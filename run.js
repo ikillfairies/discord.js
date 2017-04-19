@@ -4,6 +4,8 @@ const commands = require('./commands');
 const os = require('os');
 
 const stockPattern = /\$[a-z]{1,5}/gi;
+const portfolioPattern = /^(port)( [a-z]{1,5})*/gi;
+
 const client = new Discord.Client();
 const botOwner = os.userInfo().username;
 
@@ -37,8 +39,12 @@ client.on('message', message => {
 
     var match;
     while ((match = stockPattern.exec(text)) !== null) {
-        console.log(`Found ${match[0]}`);
-        commands.getStockPrice(channel, match[0].toUpperCase());
+        console.log(`found ${match[0]}`);
+        commands.getStockPrice(channel, match[0].toUpperCase().slice(1));
+    }
+    while ((match = portfolioPattern.exec(text)) !== null) {
+        console.log('portfolio triggered');
+        commands.portfolio(channel, text, message.author.id);
     }
 
     if (text === 'shutdown ' + botOwner.toLowerCase()) {
