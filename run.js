@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const secrets = require('./secrets');
 const commands = require('./commands');
+
 const os = require('os');
 
 const stockPattern = /\$[a-z]{1,5}/gi;
@@ -28,12 +29,12 @@ client.on('message', message => {
     if (message.author.username === 'Shitty-Bot') return;
 
     channel = client.channels.get(message.channel.id);
-    text = text = message.content.toLowerCase();
+    text = message.content.toLowerCase();
     botStatus = client.user.presence.status;
 
     if (text === 'wake up' && botStatus == 'dnd') {
         client.user.setStatus('online');
-        channel.sendMessage('ok, back');
+        channel.send('ok, back');
     }
     else if (botStatus == 'dnd') return;
 
@@ -48,17 +49,17 @@ client.on('message', message => {
     }
 
     if (text === 'shutdown ' + botOwner.toLowerCase()) {
-        channel.sendMessage(`${botOwner}\'s Shitty-Bot shutting down.`);
+        channel.send(`${botOwner}\'s Shitty-Bot shutting down.`);
         client.destroy();
     }
 
     else if (text === 'go to sleep' && botStatus == 'online') {
         client.user.setStatus('dnd');
-        channel.sendMessage('brb afk');
+        channel.send('brb afk');
     }
 
     else if (text === 'status' || text === 'uptime') {
-        channel.sendMessage(commands.botStatus(client, client.readyAt, botOwner));
+        channel.send(commands.botStatus(client, client.readyAt, botOwner));
     }
 
     else if (text.includes(botOwner.toString().toLowerCase())) {
@@ -66,17 +67,20 @@ client.on('message', message => {
     }
 
     else if (text.includes('options') && text.length < 14) {
-        text = text.replace('options', '');
-        text = text.replace(' ', '');
+        text = text.replace('options', '').replace(' ', '');
         console.log(text);
         commands.getOptionsChain(channel, text.toUpperCase());
     }
 
     else if (text.includes('expirations') && text.length < 18) {
-        text = text.replace('expirations', '');
-        text = text.replace(' ', '');
+        text = text.replace('expirations', '').replace(' ', '');
         console.log(text);
         commands.getOptionsExpirations(channel, text.toUpperCase());
+    }
+
+    else if (text.includes('price') && text.length < 10) {
+        text = text.replace('price', '').replace(' ','').toUpperCase();
+        commands.getCryptoPrice(channel, text);
     }
 
 });
