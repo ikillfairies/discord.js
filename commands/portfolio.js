@@ -9,9 +9,6 @@ module.exports = (
     function(channel, text, userid) {
         //tokenize portfolio arguments
         var arrSymbols = text.split(' ');
-        console.log(arrSymbols);
-        console.log(arrSymbols.slice(1));
-
         var portindex = db.get('portfolios').findIndex({user: userid}).value();
         console.log(portindex);
         if (portindex == -1) {
@@ -24,12 +21,7 @@ module.exports = (
         } else {
             if (arrSymbols.length == 1){
                 var portfolio = db.get(`portfolios[${portindex}]`).value().symbols;
-                var partialGetStockPrice = function(channel) {
-                    return function(ticker){
-                        getStockPrice(channel, ticker);
-                    }
-                }
-                portfolio.forEach(partialGetStockPrice(channel));
+                getStockPrice(channel, portfolio.toString().toUpperCase());
             } else {
                 db.set(`portfolios[${portindex}].symbols`, arrSymbols.slice(1)).write();
                 channel.sendMessage('updated portfolio ' + arrSymbols.slice(1) + ' for user ' + channel.client.users.get(userid).username);

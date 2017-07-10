@@ -64,7 +64,7 @@ client.on('message', message => {
         channelPattern.lastIndex = 0;
     }
 
-    while ((match = portfolioPattern.exec(text)) !== null) {
+    if ((match = portfolioPattern.exec(text)) !== null) {
         console.log('portfolio triggered');
         commands.portfolio(channel, text, message.author.id);
     }
