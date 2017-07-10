@@ -6,6 +6,8 @@ const os = require('os');
 
 const stockPattern = /\$[a-z]{1,5}/gi;
 const portfolioPattern = /^(port)( [a-z]{1,5})*/gi;
+const sendMessagePattern = /^(sendMessage )([0-9]{18})/gi;
+const channelPattern = /[0-9]{18}/gi;
 
 const client = new Discord.Client();
 const botOwner = os.userInfo().username;
@@ -39,10 +41,29 @@ client.on('message', message => {
     else if (botStatus == 'dnd') return;
 
     var match;
-    while ((match = stockPattern.exec(text)) !== null) {
-        console.log(`found ${match[0]}`);
-        commands.getStockPrice(channel, match[0].toUpperCase().slice(1));
+    if ((match = stockPattern.exec(text)) !== null) {
+        var tickers = match[0].slice(1) + ',';
+        while ((match = stockPattern.exec(text)) !== null) {
+            tickers = tickers + match[0].slice(1) + ',';
+        }
+        tickers = tickers.substring(0, tickers.length - 1).toUpperCase();
+        console.log(`Found stockPattern matches: ${tickers}`);
+        commands.getStockPrice(channel, tickers);
     }
+
+    if ((match = sendMessagePattern.exec(text)) !== null) {
+        var channelID = channelPattern.exec(text)[0];
+        var sendToChannel = client.channels.get(channelID);
+        if (sendToChannel != undefined) {
+            sendToChannel.send(text.replace(match[0], ''));
+        }
+        else {
+            channel.send(String(sendToChannelID) + ' is not a valid channel.');
+        }
+        sendMessagePattern.lastIndex = 0;
+        channelPattern.lastIndex = 0;
+    }
+
     while ((match = portfolioPattern.exec(text)) !== null) {
         console.log('portfolio triggered');
         commands.portfolio(channel, text, message.author.id);
@@ -79,7 +100,7 @@ client.on('message', message => {
     }
 
     else if (text.includes('price') && text.length < 10) {
-        text = text.replace('price', '').replace(' ','').toUpperCase();
+        text = text.replace('price', '').replace(' ', '').toUpperCase();
         commands.getCryptoPrice(channel, text);
     }
 

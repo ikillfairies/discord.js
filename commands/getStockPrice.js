@@ -7,6 +7,7 @@ const tradierToken = 'Bearer ' + secrets.tradierToken;
 module.exports = (
 
     function(channel, ticker) {
+        var message = '';
         var options = {
             url: tradierURL,
             method: 'GET',
@@ -22,8 +23,15 @@ module.exports = (
             try {
                 if (!error && response.statusCode === 200) {
                     var response = JSON.parse(body).quotes.quote;
-                    console.log(response);
-                    channel.sendMessage(`${ticker}: ${response.last} (${response.change_percentage}%)`);
+                    if (response.length == undefined) {
+                        message = `${response.symbol}: ${response.last} (${response.change_percentage}%)`;
+                    }
+                    else {
+                        for (i = 0; i < response.length; i++) {
+                            message = message + `${response[i].symbol}: ${response[i].last} (${response[i].change_percentage}%)\n`;
+                        }
+                    }
+                    channel.sendMessage('```' + message + '```');
                 }
                 else {
                     channel.sendMessage('Got an error: ', error, ', status code: ', response);
