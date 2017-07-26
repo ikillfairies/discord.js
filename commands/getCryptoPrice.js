@@ -15,7 +15,6 @@ module.exports = (
       request(buyURL, (error, response, body) => {
         if (!error && response.statusCode === 200) {
           var response = JSON.parse(body);
-          console.log(response);
           buyPrice = response.data.amount;
           resolve('Success 1');    
         }
@@ -30,7 +29,6 @@ module.exports = (
       request(sellURL, (error, response, body) => {
         if (!error && response.statusCode === 200) {
           var response = JSON.parse(body);
-          console.log(response);
           sellPrice = response.data.amount;
           resolve('Success 2'); 
         }
@@ -41,7 +39,8 @@ module.exports = (
     });
 
     Promise.all([buyPromise, sellPromise]).then(function(result) {
-      output += cryptocurrency + ' on Coinbase' + '```Buy:    ' + buyPrice + ' USD\n';
+      output += cryptocurrency + ' on Coinbase' + '```';
+      output += 'Buy:    ' + buyPrice + ' USD\n';
       output += 'Sell:   ' + sellPrice + ' USD\n';
       output += 'Spread: ' + String((parseFloat(buyPrice) - parseFloat(sellPrice)).toFixed(2)) + ' USD```';
       channel.send(output);

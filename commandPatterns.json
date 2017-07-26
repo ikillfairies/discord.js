@@ -1,0 +1,5 @@
+{
+  "stockPattern": "/\\$[a-z]{1,5}/gi",
+  "portfolioPattern": "/^(port)( [a-z]{1,5})*/gi",
+  "sendMessagePattern": "/^(sendMessage )([0-9]{18})/gi"
+}
