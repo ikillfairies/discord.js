@@ -29,17 +29,6 @@ module.exports = (
 
         }
 
-        //console.log(db.get('portfolios').value());
-        //TODO: if port is only argument, read from db and show quotes for all symbols associated with user
-        /*
-        if (arrSymbols.length <= 1){
-            console.log(foundport);
-        }else{
-
-        }
-        */
-        //TODO: write portfolio to db associated with userid. overwrite if entry exists
-
     }
 
 )

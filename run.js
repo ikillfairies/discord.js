@@ -8,6 +8,7 @@ const stockPattern = /\$[a-z]{1,5}/gi;
 const portfolioPattern = /^(port)( [a-z]{1,5})*/gi;
 const sendMessagePattern = /^(sendMessage )([0-9]{18})/gi;
 const channelPattern = /[0-9]{18}/gi;
+const tradeEntryPattern = /^(bot|sold)( [0-9]+)( [a-z]{1,5})( [0-9]+\.?[0-9]+)/gi;
 
 const client = new Discord.Client();
 const botOwner = os.userInfo().username;
@@ -67,6 +68,12 @@ client.on('message', message => {
     if ((match = portfolioPattern.exec(text)) !== null) {
         console.log('portfolio triggered');
         commands.portfolio(channel, text, message.author.id);
+    }
+
+    if ((match = tradeEntryPattern.exec(text)) !== null) {
+        console.log('trade entry triggered');
+        commands.logTrade(channel, text, message.author.id);
+
     }
 
     if (text === 'shutdown ' + botOwner.toLowerCase()) {
